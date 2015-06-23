@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.gguo.qantassearch.gui.util;
+package com.gguo.qantassearch.util;
 
-import com.gguo.qantassearch.gui.App;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
