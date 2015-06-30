@@ -5,6 +5,15 @@
  */
 package com.gguo.qantassearch.gui;
 
+import com.gguo.qantassearch.util.Helper;
+import com.gguo.qantassearch.util.MyCustomFilter;
+import com.gguo.qantassearch.util.Search;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.logging.Level;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 
@@ -18,6 +27,8 @@ public class App extends javax.swing.JFrame {
      * Creates new form NewApplication
      */
     final static Logger logger = Logger.getLogger(App.class.getName());
+    final static int keywordMinLength = 1;
+    final static int keywordMaxLength = 4;
 
     public App() {
         logger.info("Begin init Components.....");
@@ -33,7 +44,16 @@ public class App extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
+        fcDict = new javax.swing.JFileChooser();
+        btnDictFileLoad = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtaDisplay = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tpFilename = new javax.swing.JTextPane();
+        btnViewDict = new javax.swing.JButton();
+        btnRunSearch = new javax.swing.JButton();
+        tfDuration = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
@@ -49,14 +69,44 @@ public class App extends javax.swing.JFrame {
         contentsMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
 
+        fcDict.setCurrentDirectory(new File(System.getProperty("user.home")));
+        fcDict.setDialogTitle("Choose the dict file...");
+        fcDict.setFileFilter(new MyCustomFilter());
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton1.setText("Click Me");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnDictFileLoad.setText("Choose Dict");
+        btnDictFileLoad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnDictFileLoadActionPerformed(evt);
             }
         });
+
+        txtaDisplay.setColumns(20);
+        txtaDisplay.setRows(5);
+        jScrollPane1.setViewportView(txtaDisplay);
+
+        jScrollPane2.setViewportView(tpFilename);
+
+        btnViewDict.setText("View Dict");
+        btnViewDict.setEnabled(false);
+        btnViewDict.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewDictActionPerformed(evt);
+            }
+        });
+
+        btnRunSearch.setText("Run Search");
+        btnRunSearch.setEnabled(false);
+        btnRunSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRunSearchActionPerformed(evt);
+            }
+        });
+
+        tfDuration.setText("100");
+
+        jLabel1.setText("Times");
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
@@ -126,16 +176,40 @@ public class App extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(140, 140, 140)
-                .addComponent(jButton1)
-                .addContainerGap(189, Short.MAX_VALUE))
+                .addGap(24, 24, 24)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 432, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnDictFileLoad)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnViewDict))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(tfDuration, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnRunSearch)))
+                .addGap(0, 71, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(61, 61, 61)
-                .addComponent(jButton1)
-                .addContainerGap(195, Short.MAX_VALUE))
+                .addGap(46, 46, 46)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnDictFileLoad)
+                        .addComponent(btnViewDict))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnRunSearch)
+                    .addComponent(tfDuration, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33))
         );
 
         pack();
@@ -146,10 +220,51 @@ public class App extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnDictFileLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDictFileLoadActionPerformed
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(this, "Eggs are not supposed to be green.");
-    }//GEN-LAST:event_jButton1ActionPerformed
+        //JOptionPane.showMessageDialog(this, "Eggs are not supposed to be green.");
+        int returnVal = fcDict.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            dictFile = fcDict.getSelectedFile();
+            logger.info("Opening dict: " + dictFile.getName());
+            tpFilename.setText(dictFile.getAbsolutePath());
+            btnViewDict.setEnabled(true);
+            btnRunSearch.setEnabled(true);
+        } else {
+            logger.info("File access cancelled by user.");
+        }
+    }//GEN-LAST:event_btnDictFileLoadActionPerformed
+
+    private void btnViewDictActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDictActionPerformed
+        // TODO add your handling code here:
+        new ViewDict(dictFile).setVisible(true);
+    }//GEN-LAST:event_btnViewDictActionPerformed
+
+    private void btnRunSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRunSearchActionPerformed
+        // TODO add your handling code here:
+
+        wordList = processDictFile();
+        int count = wordList.size();
+        int[] outcome = validatedRunCount(tfDuration.getText());
+        logger.info("Pre-check validation(0 - not valid, 1 - ok): " + outcome[0]);
+        if (outcome[0] == 1) {
+            for (int i = 0; i < outcome[1]; i++) {
+                int keywordLen = Helper.getRandomNumInt(keywordMinLength, keywordMaxLength); //1-4
+                String[] keywords = getDictionaryWords(keywordLen);
+                Search.OpenRandomURL(keywords);
+                try {
+                    Thread.sleep(4000);
+                    logger.info("Thread in sleep...4000ms");
+                } catch (InterruptedException ex) {
+                    logger.error("Can't sleep thread... " , ex);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Enter a valid number...");
+            logger.warn(tfDuration.getText() + " is not a valid number.");
+        }
+
+    }//GEN-LAST:event_btnRunSearchActionPerformed
 
     /**
      * @param args the command line arguments
@@ -189,20 +304,69 @@ public class App extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
+    private javax.swing.JButton btnDictFileLoad;
+    private javax.swing.JButton btnRunSearch;
+    private javax.swing.JButton btnViewDict;
     private javax.swing.JMenuItem contentsMenuItem;
     private javax.swing.JMenuItem copyMenuItem;
     private javax.swing.JMenuItem cutMenuItem;
     private javax.swing.JMenuItem deleteMenuItem;
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem exitMenuItem;
+    private javax.swing.JFileChooser fcDict;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;
     private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JMenuItem saveAsMenuItem;
     private javax.swing.JMenuItem saveMenuItem;
+    private javax.swing.JTextField tfDuration;
+    private javax.swing.JTextPane tpFilename;
+    private javax.swing.JTextArea txtaDisplay;
     // End of variables declaration//GEN-END:variables
+    private File dictFile;
+    private ArrayList<String> wordList;
+
+    private ArrayList<String> processDictFile() {
+        ArrayList<String> list = new ArrayList<String>();
+        try {
+            Scanner s = new Scanner(dictFile);
+            while (s.hasNext()) {
+                list.add(s.next());
+            }
+        } catch (FileNotFoundException ex) {
+            logger.error("Process file failed...", ex);
+        }
+        logger.info(dictFile.getName() + " has " + list.size() + " lines.");
+        return list;
+    }
+
+    private int[] validatedRunCount(String text) {
+        int[] outcome;
+        outcome = new int[2];
+        try {
+            outcome[1] = Integer.valueOf(text);
+            outcome[0] = 1;
+
+        } catch (NumberFormatException nfe) {
+            logger.error("Can't conver " + text + " to integer..", nfe);
+            outcome[0] = 0;
+        }
+
+        return outcome;
+    }
+
+    private String[] getDictionaryWords(int keywordLen) {
+        String[] kws = new String[keywordLen];
+        for (int j = 0; j < keywordLen; j++) {
+            int index = Helper.getRandomNumInt(0, wordList.size());
+            kws[j] = wordList.get(index);
+        }
+        return kws;
+    }
 
 }
