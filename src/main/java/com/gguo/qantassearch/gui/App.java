@@ -27,8 +27,8 @@ public class App extends javax.swing.JFrame {
      * Creates new form NewApplication
      */
     final static Logger logger = Logger.getLogger(App.class.getName());
-    final static int keywordMinLength = 1;
-    final static int keywordMaxLength = 4;
+
+    final static String SEARCHTHREADNAME = "QSearch";
 
     public App() {
         logger.info("Begin init Components.....");
@@ -54,6 +54,7 @@ public class App extends javax.swing.JFrame {
         btnRunSearch = new javax.swing.JButton();
         tfDuration = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        btnPause = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
@@ -107,6 +108,14 @@ public class App extends javax.swing.JFrame {
         tfDuration.setText("100");
 
         jLabel1.setText("Times");
+
+        btnPause.setText("Pause");
+        btnPause.setEnabled(false);
+        btnPause.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPauseActionPerformed(evt);
+            }
+        });
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
@@ -190,7 +199,9 @@ public class App extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnRunSearch)))
+                        .addComponent(btnRunSearch)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnPause)))
                 .addGap(0, 71, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -206,7 +217,8 @@ public class App extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnRunSearch)
                     .addComponent(tfDuration, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel1)
+                    .addComponent(btnPause))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(33, 33, 33))
@@ -248,23 +260,48 @@ public class App extends javax.swing.JFrame {
         int[] outcome = validatedRunCount(tfDuration.getText());
         logger.info("Pre-check validation(0 - not valid, 1 - ok): " + outcome[0]);
         if (outcome[0] == 1) {
-            for (int i = 0; i < outcome[1]; i++) {
-                int keywordLen = Helper.getRandomNumInt(keywordMinLength, keywordMaxLength); //1-4
-                String[] keywords = getDictionaryWords(keywordLen);
-                Search.OpenRandomURL(keywords);
-                try {
-                    Thread.sleep(4000);
-                    logger.info("Thread in sleep...4000ms");
-                } catch (InterruptedException ex) {
-                    logger.error("Can't sleep thread... " , ex);
-                }
-            }
+            qsearch = new Search(outcome[1], wordList, SEARCHTHREADNAME);
+            qsearch.start();
+            btnPause.setEnabled(true);
+//            for (int i = 0; i < outcome[1]; i++) {
+//                int keywordLen = Helper.getRandomNumInt(keywordMinLength, keywordMaxLength); //1-4
+//                String[] keywords = getDictionaryWords(keywordLen);
+//                Search.OpenRandomURL(keywords);
+//                try {
+//                    Thread.sleep(4000);
+//                    logger.info("Thread in sleep...4000ms");
+//                } catch (InterruptedException ex) {
+//                    logger.error("Can't sleep thread... " , ex);
+//                }
+//            }
         } else {
             JOptionPane.showMessageDialog(this, "Enter a valid number...");
             logger.warn(tfDuration.getText() + " is not a valid number.");
         }
 
     }//GEN-LAST:event_btnRunSearchActionPerformed
+
+    private void btnPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPauseActionPerformed
+        // TODO add your handling code here:
+
+        qsearch.setPaused();
+        if (btnPause.getText().equalsIgnoreCase("Pause")) {
+            btnPause.setText("Resume");
+        } else {
+            btnPause.setText("Pause");
+        }
+//      synchronized(qsearch){  if (qsearch.isAlive() && qsearch.getState() == Thread.State.WAITING) {
+//            qsearch.notify();
+//        } else {
+//            try {
+//                qsearch.wait();
+//            } catch (InterruptedException ex) {
+//                logger.error("Thread " + qsearch.getName() + " Can't sleep... ", ex);
+//            }
+//
+//        }
+//      }
+    }//GEN-LAST:event_btnPauseActionPerformed
 
     /**
      * @param args the command line arguments
@@ -305,6 +342,7 @@ public class App extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JButton btnDictFileLoad;
+    private javax.swing.JButton btnPause;
     private javax.swing.JButton btnRunSearch;
     private javax.swing.JButton btnViewDict;
     private javax.swing.JMenuItem contentsMenuItem;
@@ -330,6 +368,7 @@ public class App extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
     private File dictFile;
     private ArrayList<String> wordList;
+    private Search qsearch;
 
     private ArrayList<String> processDictFile() {
         ArrayList<String> list = new ArrayList<String>();
@@ -358,15 +397,6 @@ public class App extends javax.swing.JFrame {
         }
 
         return outcome;
-    }
-
-    private String[] getDictionaryWords(int keywordLen) {
-        String[] kws = new String[keywordLen];
-        for (int j = 0; j < keywordLen; j++) {
-            int index = Helper.getRandomNumInt(0, wordList.size());
-            kws[j] = wordList.get(index);
-        }
-        return kws;
     }
 
 }
