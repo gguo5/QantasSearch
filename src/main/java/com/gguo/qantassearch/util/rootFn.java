@@ -28,12 +28,14 @@ public class rootFn {
         // TODO code application logic here
         int maxRun = 150;
         if (Desktop.isDesktopSupported()) {
+            int start = 820;
             for (int i = 0; i <= maxRun; i++) {
-                String url = getNewURL();
+                
+                String url = getNewURLSeq(start++);
                 Desktop.getDesktop().browse(new URI(url));
                 logger.info(url);
                 try {
-                    Thread.sleep(4000);
+                    Thread.sleep(9000);
                 } catch (InterruptedException ex) {
                     
                 }
@@ -45,14 +47,22 @@ public class rootFn {
     }
 
     private static String getNewURL() {
-        String baseURL = "http://www.bing.com/search?mkt=en-AU&ourmark=1&FORM=RKTNTB&PC=RK01&q=candy%20crush%20";
+        String baseURL = "http://www.bing.com/search?mkt=en-AU&ourmark=1&FORM=RKTNTB&PC=RK01&q=candy%20crush%20saga%20level%20";
         String newURL = baseURL + getRandomNum();
+        return newURL;
+
+    }
+    
+    
+    private static String getNewURLSeq(int seq) {
+        String baseURL = "http://www.bing.com/search?mkt=en-AU&ourmark=1&FORM=RKTNTB&PC=RK01&q=candy%20crush%20saga%20level%20";
+        String newURL = baseURL + seq;
         return newURL;
 
     }
 
     private static String getRandomNum() {
-        int min = 1, max = 1024;
+        int min = 811, max = 1024;
         // Usually this can be a field rather than a method variable
         Random rand = new Random();
 
