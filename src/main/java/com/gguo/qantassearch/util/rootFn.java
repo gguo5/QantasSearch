@@ -26,9 +26,9 @@ public class rootFn {
     
     public static void main(String[] args) throws IOException, URISyntaxException {
         // TODO code application logic here
-        int maxRun = 150;
+        int maxRun = 200;
         if (Desktop.isDesktopSupported()) {
-            int start = 820;
+            int start = 820;//820
             for (int i = 0; i <= maxRun; i++) {
                 
                 String url = getNewURLSeq(start++);
@@ -50,7 +50,7 @@ public class rootFn {
         String baseURL = "http://www.bing.com/search?mkt=en-AU&ourmark=1&FORM=RKTNTB&PC=RK01&q=candy%20crush%20saga%20level%20";
         String newURL = baseURL + getRandomNum();
         return newURL;
-
+        
     }
     
     

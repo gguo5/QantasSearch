@@ -6,8 +6,7 @@
 package com.gguo.qantassearch.gui;
 
 import com.gguo.qantassearch.util.MyCustomFilter;
-import com.gguo.qantassearch.util.Search;
-import com.gguo.qantassearch.util.SearchCandy;
+import com.gguo.qantassearch.util.Count;
 import java.awt.Color;
 import java.io.File;
 import javax.swing.JOptionPane;
@@ -17,21 +16,26 @@ import org.apache.log4j.Logger;
  *
  * @author gguo
  */
-public class App extends javax.swing.JFrame {
+public class AppTest extends javax.swing.JFrame {
 
     /**
      * Creates new form NewApplication
      */
-    final static Logger logger = Logger.getLogger(App.class.getName());
+    final static Logger logger = Logger.getLogger(AppTest.class.getName());
 
     final static String SEARCHTHREADNAME = "QSearch";
     private final static String STOPTEXT = "Stop";
 
-    public App() {
+    public AppTest() {
         logger.info("QSearch started...");
         initComponents();
         //temp
         btnRunSearch.setEnabled(true);
+    }
+    
+    
+    public void setTextFieldText (int number){
+    txtaDisplay.setText(String.valueOf(number));
     }
 
     /**
@@ -99,7 +103,7 @@ public class App extends javax.swing.JFrame {
             }
         });
 
-        startIndex.setText("820");
+        startIndex.setText("906");
 
         jLabel2.setText("Start at");
 
@@ -182,15 +186,15 @@ public class App extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(startIndex, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(8, 8, 8)
+                                .addComponent(startIndex, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnPause)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(repeat, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(repeat, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addGap(0, 71, Short.MAX_VALUE))
         );
@@ -229,12 +233,14 @@ public class App extends javax.swing.JFrame {
             btnRunSearch.setText("Run");
             btnRunSearch.setBackground(Color.white);
             btnPause.setEnabled(false);
+            btnPause.setText("Pause");
+            
         } else {
             btnRunSearch.setText("Stop");
             btnRunSearch.setBackground(Color.red);
             boolean runFlag = true;
             if (runFlag) {
-                qsearch = new SearchCandy(Integer.parseInt(startIndex.getText()), Integer.parseInt(repeat.getText()), SEARCHTHREADNAME);
+                qsearch = new Count(Integer.parseInt(startIndex.getText()), Integer.parseInt(repeat.getText()), SEARCHTHREADNAME, this);
                 qsearch.start();
                 btnPause.setEnabled(true);
             }
@@ -243,6 +249,10 @@ public class App extends javax.swing.JFrame {
     private void btnPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPauseActionPerformed
         // TODO add your handling code here:
         logger.debug("pause btn clicked");
+        
+        qsearch.isAlive();
+        qsearch.getState();
+        
         qsearch.setPaused();
         if (btnPause.getText().equalsIgnoreCase("Pause")) {
             btnPause.setText("Resume");
@@ -279,21 +289,23 @@ public class App extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(App.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AppTest.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(App.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AppTest.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(App.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AppTest.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(App.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AppTest.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new App().setVisible(true);
+                new AppTest().setVisible(true);
             }
         });
     }
@@ -325,5 +337,5 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JTextArea txtaDisplay;
     // End of variables declaration//GEN-END:variables
 
-    private SearchCandy qsearch;
+    private Count qsearch;
 }
